@@ -1,5 +1,7 @@
 package me.yorick.poc.persistence.controller;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,9 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private EntityManager entityManager;
+	
 	@GetMapping("/register/{name}")
 	public void register(@PathVariable String name) {
 
@@ -38,8 +43,12 @@ public class UserController {
 
 		String email = createEmail(name);
 		User user = userRepository.findByEmail(email);
-		user.setMobile("abcdefg");
+		user.setMobile("hijlmn1");
 
+		System.out.println("controller:"+entityManager.getClass().getCanonicalName());
+		System.out.println("controller1:"+user);
+		entityManager.detach(user);
+		System.out.println("controller2:"+user);
 		userService.clone(email);
 	}
 

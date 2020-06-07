@@ -31,13 +31,15 @@ public class UserService {
 	}
 
 	
+	
 	public void clone(String email) {
 		
 		User user =  findUserByEmail(email);
-		user.setGender("female");
+		System.out.println("service:"+user);
+		user.setGender("femal1");
 		
 		User clone = new User();
-		clone.setEmail(user.getEmail());
+		clone.setEmail(user.getEmail()+".test4");
 		clone.setName(user.getName());
 		clone.setMobile(user.getMobile());
 		clone.setGender("male");
@@ -48,8 +50,10 @@ public class UserService {
 	
 	public boolean isSameReference(String email, User outside) {
 		System.out.println("--------------------------------------------------------------------------------------");
-		
-		return  outside == findUserByEmail("yorick1@hello.com");
+		System.out.println(outside);
+		User here=findUserByEmail("yorick1@hello.com");
+		System.out.println(here);
+		return  outside == here;
 	   
 	}
 	
