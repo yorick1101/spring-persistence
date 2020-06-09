@@ -1,5 +1,5 @@
 # spring-persistence
-This project is to test some behaviour of jpa 
+This project is to test some behaviour of jpa, the test is based on spring boot 2.3.0.RELEASE
 
 ## Background
 - EntityManager is the interface to interact with the persistence context
