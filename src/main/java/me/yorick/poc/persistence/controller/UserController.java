@@ -1,6 +1,10 @@
 package me.yorick.poc.persistence.controller;
 
-import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import me.yorick.poc.persistence.entity.User;
-import me.yorick.poc.persistence.repository.UserRepository;
 import me.yorick.poc.persistence.service.UserService;
 
 @RestController
@@ -19,46 +22,41 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private UserRepository userRepository;
+	private User user;
 
-	@Autowired
-	private EntityManager entityManager;
-	
 	@GetMapping("/register/{name}")
 	public void register(@PathVariable String name) {
-
-		String email = createEmail(name);
-		User user = new User();
-		user.setName(name);
-		user.setEmail(email);
-		user.setGender("male");
-		user.setMobile("1234567");
 
 		userService.createNewUser(user);
 	}
 
-	@GetMapping("/clone/{name}")
-	public void clone(@PathVariable String name) {
+	@GetMapping("/test")
+	public Map<String, Object> test() throws InterruptedException, ExecutionException {
+		Map<String, Object> result = new HashMap<>(); 
 
-		String email = createEmail(name);
-		User user = userRepository.findByEmail(email);
-		user.setMobile("hijlmn1");
-
-		System.out.println("controller:"+entityManager.getClass().getCanonicalName());
-		System.out.println("controller1:"+user);
-		entityManager.detach(user);
-		System.out.println("controller2:"+user);
-		userService.clone(email);
+		result.put("findTwice", userService.findTwice(user.getEmail()));
+		result.put("fidnTwiceCrossService", userService.fidnTwiceCrossService(user.getEmail()));
+		result.put("fidnTwiceCrossServiceTransactional", userService.fidnTwiceCrossServiceTransactional(user.getEmail()));
+		result.put("fidnTwiceAsyncCrossService", userService.fidnTwiceAsyncCrossService(user.getEmail()));
+		
+		return result;
+		
+	}
+	
+	
+	@GetMapping("/testFlush")
+	public void testFlush() {
+		userService.isFlush3(user.getEmail());
 	}
 
-	@GetMapping("/check/{name}")
-	public boolean check(@PathVariable String name){
-		String email = createEmail(name);
-		return userService.isSameReference(email, userRepository.findByEmail(email));
-	}
+	@PostConstruct
+	private void defautlUser() {
+		User user = new User();
+		user.setName("yorick");
+		user.setEmail("yorick@hello.com");
+		user.setGender("male");
+		user.setMobile("1234567");
 
-	private String createEmail(String name) {
-		return name+"@hello.com";	
+		this.user = user;
 	}
 }

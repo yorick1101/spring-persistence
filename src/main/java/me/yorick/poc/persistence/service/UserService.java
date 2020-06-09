@@ -1,5 +1,12 @@
 package me.yorick.poc.persistence.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,51 +18,102 @@ import me.yorick.poc.persistence.repository.UserRepository;
 @Service
 public class UserService {
 
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Transactional
+
+	@Autowired
+	private UserMockService userMockService;
+
 	public void createNewUser(User user) {
-		
-		if(userRepository.existsByEmail(user.getEmail())) {
-			throw new RuntimeException("Email is already registered");
-		}
-		
-		userRepository.save(user);
-		
+		userRepository.save(user);	
 	}
 
 	public User findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
 
-	
-	
-	public void clone(String email) {
-		
+	//In same method
+	public boolean findTwice(String email) {
+		User user1 =  findUserByEmail(email);
+		User user2 =  findUserByEmail(email);	
+		return user1 == user2;
+	}
+
+	//One comes from another service
+	public boolean fidnTwiceCrossService(String email) {
+
+		User user1 =  findUserByEmail(email);
+		User user2 =  userMockService.findUserByEmail(email);	
+		return user1 == user2;
+	}
+
+	//One comes from another service
+	public boolean fidnTwiceCrossServiceTransactional(String email) {
+
+		User user1 =  findUserByEmail(email);
+		User user2 =  userMockService.findUserByEmailTransactional(email);	
+		return user1 == user2;
+	}
+
+	//One comes from another service asynchrounsly
+	@Transactional
+	public boolean fidnTwiceAsyncCrossService(String email) throws InterruptedException, ExecutionException {
+
+		User user1 =  findUserByEmail(email);
+		CompletableFuture<User> user2 =  userMockService.asyncFindUserByEmail(email);	
+		return user1 == user2.get();
+	}
+
+
+	//Update a user without save, then save a new user
+	//user's mobile is updated
+	public void isFlush(String email) {
 		User user =  findUserByEmail(email);
-		System.out.println("service:"+user);
-		user.setGender("femal1");
-		
-		User clone = new User();
-		clone.setEmail(user.getEmail()+".test4");
-		clone.setName(user.getName());
-		clone.setMobile(user.getMobile());
-		clone.setGender("male");
-		
-		
-		userRepository.save(clone);
+		user.setMobile(new Date().toLocaleString());
+
+		User newUser = newUser();
+		userRepository.save(newUser);
 	}
-	
-	public boolean isSameReference(String email, User outside) {
-		System.out.println("--------------------------------------------------------------------------------------");
-		System.out.println(outside);
-		User here=findUserByEmail("yorick1@hello.com");
-		System.out.println(here);
-		return  outside == here;
-	   
+
+	//Save a new user, then find and update a user without save
+	//user's mobile is not updated
+	public void isFlush2(String email) {
+
+		User newUser = newUser();
+		userRepository.save(newUser);
+
+		User user =  findUserByEmail(email);
+		user.setMobile(new Date().toLocaleString());
 	}
+
+	//Same as isFlush2, but annotated with @Transactional
+	//Call this method from inside the class : user's mobile is not updated
+	//Call this method from outside the class : user's mobile  updated
+	@Transactional
+	public void isFlush3(String email) {
+
+		User newUser = newUser();
+		userRepository.save(newUser);
+
+		User user =  findUserByEmail(email);
+		user.setMobile(new Date().toLocaleString());
 	
-	
+	}
+
+
+	private User newUser() {
+		User newUser = new User();
+		newUser.setName("new User");
+		newUser.setEmail(UUID.randomUUID().toString());
+		newUser.setGender("male");
+		newUser.setMobile(Long.valueOf(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).toString());
+
+		return newUser;
+	}
+
+	public void testFlush(String email) {
+		isFlush3(email);
+	}
+
 }
