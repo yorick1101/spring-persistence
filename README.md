@@ -1,10 +1,5 @@
 # spring-persistence
-## This project is to test some behaviours of jpa 
-
-## Note
-- The PersistenceContext in Spring is default to **PersistenceContextType.TRANSACTION** 
-- Although the objects returned has the same reference, it still touch the database **twice**
-- JpaRepository annotated all CRUD methods as @Transactional
+This project is to test some behaviour of jpa 
 
 ## Test if entity returned by JpaRepository the same object
 
@@ -14,6 +9,10 @@
 | One is found in a method in another service | Y |
 | One is found in a transactional method in another service | Y |
 | One is found in an asynchronous method in another service | **N** |
+
+### Note
+- The PersistenceContext in Spring is default to **PersistenceContextType.TRANSACTION** 
+- Although the objects returned has the same reference, it still touch the database **twice**
 
 ## Test Auto Flush
 ### Update a user without save, then save a new user
@@ -52,3 +51,5 @@ public void isFlush3(String email) {
 		user.setMobile(new Date().toLocaleString());
 }
 ```
+### Note
+- JpaRepository annotated all CRUD methods as @Transactional
