@@ -16,7 +16,7 @@ This project is to test some behaviour of jpa
 
 ## Test Auto Flush
 ### 1. Update a user without save, then save a new user
-#### The change to the user entity is flushed back to DB
+- The change to the user entity is flushed back to DB
 ```  
 public void isFlush(String email) {
     User user =  findUserByEmail(email);
@@ -27,7 +27,7 @@ public void isFlush(String email) {
 }
 ``` 
 ### 2. Save a new user, then find and update a user without save
-#### The change to the user entity is not flushed.
+- The change to the user entity is not flushed.
 ```
 public void isFlush2(String email) {
     User newUser = newUser();
@@ -39,8 +39,8 @@ public void isFlush2(String email) {
 ```
 
 ### 3. Same as above, but annotated with @Transactional
-#### Invoke this method **inside** this class, the change to user entity will **not** be flushed
-#### Invoke this method from **outside** the class, the change to user entity will be flushed
+- Invoke this method **inside** this class, the change to user entity is **not** flushed
+- Invoke this method from **outside** the class, the change to user entity is flushed
 ```
 @Transactional
 public void isFlush3(String email) {
