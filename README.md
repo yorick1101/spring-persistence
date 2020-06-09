@@ -19,22 +19,22 @@ This project is to test some behaviour of jpa
 #### The change to the user entity is flushed back to DB
 ```  
 public void isFlush(String email) {
-		User user =  findUserByEmail(email);
-		user.setMobile(new Date().toLocaleString());
+    User user =  findUserByEmail(email);
+    user.setMobile(new Date().toLocaleString());
 
-		User newUser = newUser();
-		userRepository.save(newUser);
+    User newUser = newUser();
+    userRepository.save(newUser);
 }
 ``` 
 ### Save a new user, then find and update a user without save
 #### The change to the user entity is not flushed.
 ```
 public void isFlush2(String email) {
-		User newUser = newUser();
-		userRepository.save(newUser);
+    User newUser = newUser();
+    userRepository.save(newUser);
 
-		User user =  findUserByEmail(email);
-		user.setMobile(new Date().toLocaleString());
+    User user =  findUserByEmail(email);
+    user.setMobile(new Date().toLocaleString());
 }
 ```
 
@@ -44,11 +44,11 @@ public void isFlush2(String email) {
 ```
 @Transactional
 public void isFlush3(String email) {
-		User newUser = newUser();
-		userRepository.save(newUser);
+    User newUser = newUser();
+    userRepository.save(newUser);
 
-		User user =  findUserByEmail(email);
-		user.setMobile(new Date().toLocaleString());
+    User user =  findUserByEmail(email);
+    user.setMobile(new Date().toLocaleString());
 }
 ```
 ### Note
