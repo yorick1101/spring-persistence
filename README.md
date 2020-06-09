@@ -15,7 +15,7 @@ This project is to test some behaviour of jpa
 - Although the objects returned has the same reference, it still touch the database **twice**
 
 ## Test Auto Flush
-### Update a user without save, then save a new user
+### 1. Update a user without save, then save a new user
 #### The change to the user entity is flushed back to DB
 ```  
 public void isFlush(String email) {
@@ -26,7 +26,7 @@ public void isFlush(String email) {
     userRepository.save(newUser);
 }
 ``` 
-### Save a new user, then find and update a user without save
+### 2. Save a new user, then find and update a user without save
 #### The change to the user entity is not flushed.
 ```
 public void isFlush2(String email) {
@@ -38,7 +38,7 @@ public void isFlush2(String email) {
 }
 ```
 
-### Same as above, but annotated with @Transactional
+### 3. Same as above, but annotated with @Transactional
 #### Invoke this method **inside** this class, the change to user entity will **not** be flushed
 #### Invoke this method from **outside** the class, the change to user entity will be flushed
 ```
