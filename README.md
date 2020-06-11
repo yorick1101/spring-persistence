@@ -58,7 +58,67 @@ public void isFlush3(String email) {
     user.setMobile(new Date().toLocaleString());
 }
 ```
+### 4. Extend from #1, detach the user entity
+- the change to user entity is not flushed
+```
+public void isFlush4(String email) {
 
+	User user =  findUserByEmail(email);
+    entityManager.detach(user);
+    user.setMobile(new Date().toLocaleString());
+
+    User newUser = newUser();
+    userRepository.save(newUser);
+
+}
+```
+
+### 5. Extend from #3, detach the user entity
+- the change to user entity is not flushed
+```
+@Transactional
+public void isFlush5(String email) {
+
+	User newUser = newUser();
+	userRepository.save(newUser);
+
+	User user =  findUserByEmail(email);
+	entityManager.detach(user);
+	user.setMobile(new Date().toLocaleString());
+
+}
+```
+
+### 6. Extend from #4, detach the user entity after saving newUser
+- the change to user entity is  flushed
+```
+public void isFlush6(String email) {
+
+    User user =  findUserByEmail(email);
+    user.setMobile(new Date().toLocaleString());
+
+    User newUser = newUser();
+    userRepository.save(newUser);
+
+    entityManager.detach(user);
+}
+```
+
+### 7. Extend from #6, detach the user entity after saving newUser and add @Transactional annotation
+- the change to user entity is not flushed
+```
+@Transactional
+public void isFlush7(String email) {
+
+    User user =  findUserByEmail(email);
+    user.setMobile(new Date().toLocaleString());
+
+    User newUser = newUser();
+    userRepository.save(newUser);
+
+    entityManager.detach(user);
+}
+```
 ## Note
 - The PersistenceContext in Spring is default to **PersistenceContextType.TRANSACTION** 
 - Although the objects returned has the same reference, it still touch the database **twice**
