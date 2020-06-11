@@ -44,9 +44,34 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/testFlush")
-	public void testFlush() {
-		userService.isFlush3(user.getEmail());
+	@GetMapping("/testFlush/{id}")
+	public void testFlush(@PathVariable int id) {
+		switch(id) {
+		case 1:
+			userService.isFlush(user.getEmail());
+			break;
+		case 2:
+			userService.isFlush2(user.getEmail());
+			break;
+		case 3:
+			userService.isFlush3(user.getEmail());
+			break;
+		case 4:
+			userService.isFlush4(user.getEmail());
+			break;
+		case 5:
+			userService.isFlush5(user.getEmail());
+			break;
+		case 6:
+			userService.isFlush6(user.getEmail());
+			break;
+		case 7:
+			userService.isFlush7(user.getEmail());
+			break;
+		default:
+			break;
+			
+		}
 	}
 
 	@PostConstruct

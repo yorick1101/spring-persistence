@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class UserService {
 
 	@Autowired
 	private UserMockService userMockService;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	public void createNewUser(User user) {
 		userRepository.save(user);	
@@ -98,8 +102,64 @@ public class UserService {
 
 		User user =  findUserByEmail(email);
 		user.setMobile(new Date().toLocaleString());
-	
+
 	}
+
+	//Detach the entity
+	//user's mobile is not updated
+	public void isFlush4(String email) {
+
+		User newUser = newUser();
+		userRepository.save(newUser);
+
+		User user =  findUserByEmail(email);
+		entityManager.detach(user);
+		user.setMobile(new Date().toLocaleString());
+
+	}
+
+	//Detach the entity 
+	//user's mobile is not updated
+	@Transactional
+	public void isFlush5(String email) {
+
+		User newUser = newUser();
+		userRepository.save(newUser);
+
+		User user =  findUserByEmail(email);
+		entityManager.detach(user);
+		user.setMobile(new Date().toLocaleString());
+
+	}
+
+	//Detach the entity after saving newUser 
+	//user's mobile is  updated
+	public void isFlush6(String email) {
+
+		User user =  findUserByEmail(email);
+		user.setMobile(new Date().toLocaleString());
+
+		User newUser = newUser();
+		userRepository.save(newUser);
+
+		entityManager.detach(user);
+	}
+
+	
+	//With @Transactional, detach the entity after saving newUser
+    //user's mobile is not updated
+	@Transactional
+	public void isFlush7(String email) {
+
+		User user =  findUserByEmail(email);
+		user.setMobile(new Date().toLocaleString());
+
+		User newUser = newUser();
+		userRepository.save(newUser);
+
+		entityManager.detach(user);
+	}
+
 
 
 	private User newUser() {
