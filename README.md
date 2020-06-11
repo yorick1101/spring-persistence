@@ -63,7 +63,7 @@ public void isFlush3(String email) {
 ```
 public void isFlush4(String email) {
 
-	User user =  findUserByEmail(email);
+    User user =  findUserByEmail(email);
     entityManager.detach(user);
     user.setMobile(new Date().toLocaleString());
 
@@ -79,12 +79,12 @@ public void isFlush4(String email) {
 @Transactional
 public void isFlush5(String email) {
 
-	User newUser = newUser();
-	userRepository.save(newUser);
+    User newUser = newUser();
+    userRepository.save(newUser);
 
-	User user =  findUserByEmail(email);
-	entityManager.detach(user);
-	user.setMobile(new Date().toLocaleString());
+    User user =  findUserByEmail(email);
+    entityManager.detach(user);
+    user.setMobile(new Date().toLocaleString());
 
 }
 ```
