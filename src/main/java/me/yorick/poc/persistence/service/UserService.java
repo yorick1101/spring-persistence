@@ -105,20 +105,20 @@ public class UserService {
 
 	}
 
-	//Detach the entity
+	//Extend from isFlush1, detach the entity
 	//user's mobile is not updated
 	public void isFlush4(String email) {
-
-		User newUser = newUser();
-		userRepository.save(newUser);
 
 		User user =  findUserByEmail(email);
 		entityManager.detach(user);
 		user.setMobile(new Date().toLocaleString());
 
+		User newUser = newUser();
+		userRepository.save(newUser);
+
 	}
 
-	//Detach the entity 
+	//Extend from isFlush3, Detach the entity 
 	//user's mobile is not updated
 	@Transactional
 	public void isFlush5(String email) {
@@ -159,8 +159,35 @@ public class UserService {
 
 		entityManager.detach(user);
 	}
-
-
+	
+	 //user's mobile is not updated
+	public void isFlushFind1(String email, String email2) {
+		User user =  findUserByEmail(email);
+		user.setMobile(new Date().toLocaleString());
+		
+		User user2 =  findUserByEmail(email2);
+		
+	}
+	 //user's mobile is not updated
+	public void isFlushFind2(String email) {
+		User user =  findUserByEmail(email);
+		user.setMobile(new Date().toLocaleString());
+		
+		User user2 =  findUserByEmail(email);
+		System.out.println(user == user2);
+		
+	}
+	 //user's mobile is updated
+	@Transactional
+	public void isFlushFind3(String email, String email2) {
+		User user =  findUserByEmail(email);
+		user.setMobile(new Date().toLocaleString());
+		
+		User user2 =  findUserByEmail(email2);
+		System.out.println(user == user2);
+		
+	}
+	
 
 	private User newUser() {
 		User newUser = new User();

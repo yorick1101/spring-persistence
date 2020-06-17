@@ -23,11 +23,20 @@ public class UserController {
 	private UserService userService;
 
 	private User user;
+	private User user2;
 
-	@GetMapping("/register/{name}")
-	public void register(@PathVariable String name) {
+	@GetMapping("/register/{index}")
+	public void register(@PathVariable int index) {
 
-		userService.createNewUser(user);
+		switch(index) {
+		case 1:
+			userService.createNewUser(user);
+			break;
+		case 2:
+			userService.createNewUser(user2);
+			break;
+		}
+		
 	}
 
 	@GetMapping("/test")
@@ -73,7 +82,13 @@ public class UserController {
 			
 		}
 	}
-
+	
+	@GetMapping("/testFind")
+	public void testFind() {
+		//userService.isFlushFind1(user.getEmail(), user2.getEmail());
+		//userService.isFlushFind2(user.getEmail());
+		userService.isFlushFind3(user.getEmail(), user2.getEmail());
+	}
 	@PostConstruct
 	private void defautlUser() {
 		User user = new User();
@@ -83,5 +98,13 @@ public class UserController {
 		user.setMobile("1234567");
 
 		this.user = user;
+		
+		User user2 = new User();
+		user2.setName("yorick2");
+		user2.setEmail("yorick2@hello.com");
+		user2.setGender("male");
+		user2.setMobile("2234567");
+
+		this.user2 = user2;
 	}
 }
